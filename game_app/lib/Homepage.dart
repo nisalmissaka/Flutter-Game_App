@@ -1,18 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:game_app/bird.dart';
 
-class Homepage extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<Homepage> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Expanded(child: Container(color: Colors.blue,),),
-              Expanded(child: Container(color: Colors.green,),),
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: Colors.blue,
+              child: Center(child:  MyBird()),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Colors.green,
+            ),
+          ),
         ],
       ),
     );
