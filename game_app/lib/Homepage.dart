@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:game_app/bird.dart';
 
@@ -9,18 +11,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  double birdYaxis = 0;
+  double birdYaxis = -1;
 
   void jump() {
+   Timer.periodic(Duration(milliseconds: 100),(timer){
     setState(() {
-      birdYaxis -= 0.1;
-
-      // limit top movement
-      if (birdYaxis < -1) {
-        birdYaxis = -1;
-      }
+      birdYaxis += 0.1;
     });
+   });
   }
 
   @override
