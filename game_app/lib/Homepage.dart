@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:game_app/bird.dart';
 
@@ -11,22 +10,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double birdYaxis = -1;
+ static double birdYaxis = -1;
   double time = 0;
   double height = 0;
-  double initialHeight = 0;
+  double initialHeight = birdYaxis;
+  bool gameHasStarted = false;
 
   void jump() {
-    initialHeight = birdYaxis;
-   Timer.periodic(Duration(milliseconds: 100),(timer){
-    time += 0.05;
-    height = -4.9 * time * time + 5 * time;
     setState(() {
-      birdYaxis = initialHeight - height;
+      time = 0;
+      initialHeight = birdYaxis;
     });
-   });
   }
 
+  void startGame() {
+    gameHasStarted = true;
+    Timer.periodic(const Duration(milliseconds: 60), (timer) {
+      time += 0.05;
+      height = -4.9 * time * time + 2.8 * time;
+
+      setState(() {
+        birdYaxis = initialHeight - height;
+      });
+      if (birdYaxis > 1) {
+        timer.cancel();
+        gameHasStarted = false;
+      }
+    });
+  } 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +46,18 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             flex: 2,
             child: GestureDetector(
-              onTap: jump,
+              onTap: (){
+                if(gameHasStarted){
+                  jump();
+                }else{
+                  startGame();
+                }
+                
+              },
               child: AnimatedContainer(
                 alignment: Alignment(0, birdYaxis),
-                duration: const Duration(milliseconds: 200), 
-                curve: Curves.easeOut, // smooth animation
+                duration: const Duration(milliseconds:0),
+                curve: Curves.easeOut,
                 color: Colors.blue,
                 child: MyBird(),
               ),
