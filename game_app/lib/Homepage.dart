@@ -45,23 +45,38 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             flex: 2,
-            child: GestureDetector(
-              onTap: (){
-                if(gameHasStarted){
-                  jump();
-                }else{
-                  startGame();
-                }
-                
-              },
-              child: AnimatedContainer(
-                alignment: Alignment(0, birdYaxis),
-                duration: const Duration(milliseconds:0),
-                curve: Curves.easeOut,
-                color: Colors.blue,
-                child: MyBird(),
-              ),
-            ),
+            child:Stack(
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    if (gameHasStarted){
+                      jump();
+                    }else{
+                      startGame();
+                    }
+                    
+                  },
+                  child: AnimatedContainer(
+                    alignment: Alignment(0,birdYaxis),
+                    duration: Duration(microseconds: 0),
+                    color: Colors.blue,
+                    child: MyBird(),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment(0,-0.3),
+                  child: Text("T A P  T O  P L A Y",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white
+                    ),),
+                )
+              ],
+            )
+          ),
+          Container(
+            height: 15,
+            color: Colors.green,
           ),
           Expanded(
             child: Container(
