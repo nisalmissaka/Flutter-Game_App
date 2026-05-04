@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:game_app/barriers.dart';
 import 'package:game_app/bird.dart';
 
 class HomePage extends StatefulWidget {
@@ -70,6 +71,13 @@ class _HomePageState extends State<HomePage> {
                     fontSize: 20,
                     color: Colors.white
                     ),),
+                ),
+                AnimatedContainer(
+                  alignment: Alignment(0, 1),
+                  duration: Duration(milliseconds: 0),
+                 child: MyBarrier(
+                  size: 200.0,
+                ),
                 )
               ],
             )
