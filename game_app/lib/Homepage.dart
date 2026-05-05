@@ -11,11 +11,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- static double birdYaxis = -1;
+  static double birdYaxis = 0;
   double time = 0;
   double height = 0;
   double initialHeight = birdYaxis;
   bool gameHasStarted = false;
+
+  static double barrierXone = 1.5;
+  double barrierXtwo = barrierXone + 1.5;
 
   void jump() {
     setState(() {
@@ -32,88 +35,137 @@ class _HomePageState extends State<HomePage> {
 
       setState(() {
         birdYaxis = initialHeight - height;
+        
+       
+        barrierXone -= 0.05;
+        barrierXtwo -= 0.05;
       });
-      if (birdYaxis > 1) {
+
+      setState(() {
+        if (barrierXone < -2) {
+          barrierXone += 3.5;
+        }
+        if (barrierXtwo < -2) {
+          barrierXtwo += 3.5;
+        }
+      });
+
+      if (birdYaxis > 1.1) {
         timer.cancel();
-        gameHasStarted = false;
+        _resetGame();
       }
     });
-  } 
+  }
+
+  void _resetGame() {
+    setState(() {
+      birdYaxis = 0;
+      gameHasStarted = false;
+      time = 0;
+      initialHeight = birdYaxis;
+      barrierXone = 1.5; // Reset positions
+      barrierXtwo = barrierXone + 1.5;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child:Stack(
-              children: [
-                GestureDetector(
-                  onTap: (){
-                    if (gameHasStarted){
-                      jump();
-                    }else{
-                      startGame();
-                    }
-                    
-                  },
-                  child: AnimatedContainer(
-                    alignment: Alignment(0,birdYaxis),
-                    duration: Duration(microseconds: 0),
-                    color: Colors.blue,
-                    child: MyBird(),
-                  ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (gameHasStarted) {
+                    jump();
+                  } else {
+                    startGame();
+                  }
+                },
+                child: Stack(
+                  children: [
+                    // Bird
+                    AnimatedContainer(
+                      alignment: Alignment(0, birdYaxis),
+                      duration: const Duration(milliseconds: 0),
+                      color: Colors.blue,
+                      child: MyBird(),
+                    ),
+
+                    AnimatedContainer(
+                      alignment: Alignment(barrierXone, -1.1),
+                      duration: const Duration(milliseconds: 0),
+                      child: Transform.rotate(
+                        angle: 3.14,
+                        child: MyBarrier(size: screenHeight * 0.2),
+                      ),
+                    ),
+
+                    AnimatedContainer(
+                      alignment: Alignment(barrierXone, 1.1),
+                      duration: const Duration(milliseconds: 0),
+                      child: MyBarrier(size: screenHeight * 0.2),
+                    ),
+
+                    AnimatedContainer(
+                      alignment: Alignment(barrierXtwo, -1.1),
+                      duration: const Duration(milliseconds: 0),
+                      child: Transform.rotate(
+                        angle: 3.14,
+                        child: MyBarrier(size: screenHeight * 0.15),
+                      ),
+                    ),
+
+                    AnimatedContainer(
+                      alignment: Alignment(barrierXtwo, 1.1),
+                      duration: const Duration(milliseconds: 0),
+                      child: MyBarrier(size: screenHeight * 0.25),
+                    ),
+
+                    Container(
+                      alignment: const Alignment(0, -0.3),
+                      child: gameHasStarted
+                          ? const Text("")
+                          : const Text(
+                              "T A P  T O  P L A Y",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                    ),
+                  ],
                 ),
-                Container(
-                  alignment: Alignment(0,-0.3),
-                  child: Text("T A P  T O  P L A Y",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white
-                    ),),
-                ),
-                AnimatedContainer(
-                  alignment: Alignment(0, 1),
-                  duration: Duration(milliseconds: 0),
-                 child: MyBarrier(
-                  size: 200.0,
-                ),
-                )
-              ],
-            )
-          ),
-          Container(
-            height: 15,
-            color: Colors.green,
-          ),
-          Expanded(
-            child: Container(
+              ),
+            ),
+            Container(height: 10, color: Colors.green),
+            Container(
+              height: 80,
               color: Colors.brown,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                Column(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("SCORE", style: TextStyle(color: Colors.white,fontSize: 20),),
-                    SizedBox(height: 20,),
-                    Text("0",style: TextStyle(color: Colors.white,fontSize: 35)),
-                  ],
-                ),
-                Column(
+                    children: [
+                      const Text("SCORE", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 5),
+                      const Text("0", style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ],
+                  ),
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("BEST", style: TextStyle(color: Colors.white,fontSize: 20)),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text("10",style: TextStyle(color: Colors.white,fontSize: 35)),
-                  ],
-                )
-              ],),
+                    children: [
+                      const Text("BEST", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 5),
+                      const Text("10", style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

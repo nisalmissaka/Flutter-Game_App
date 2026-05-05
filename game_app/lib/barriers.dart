@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MyBarrier extends StatelessWidget {
-  
-  final size;
+  final double size;
+  final bool isTop;
 
-  MyBarrier({this.size});
+  MyBarrier({required this.size,this.isTop = false});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class MyBarrier extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: Colors.green,
-        border: Border.all(width: 10,color:Colors.green[800]!,),
+        border: Border.all(width: 8,color:Colors.green[800]!,),
         borderRadius: BorderRadius.circular(15)
     ),
     );
